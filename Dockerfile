@@ -8,6 +8,7 @@ RUN mkdir Steam && cd Steam && curl -sqL "https://steamcdn-a.akamaihd.net/client
 RUN ~/Steam/steamcmd.sh +login anonymous +force_install_dir /home/steam/pavlovserver +app_update 622970 +exit
 RUN mkdir -p ~/pavlovserver/Pavlov/Saved/Logs
 RUN mkdir -p ~/pavlovserver/Pavlov/Saved/Config/LinuxServer
+ADD RconSettings.txt /home/steam/pavlovserver/Pavlov/Saved/Config/
 ADD Game.ini /home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/
 RUN ~/Steam/steamcmd.sh +login anonymous +app_update 1007 +quit
 RUN mkdir -p /home/steam/.steam/sdk64
