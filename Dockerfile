@@ -18,3 +18,4 @@ WORKDIR /home/steam/pavlovserver
 CMD ["./PavlovServer.sh"]
 EXPOSE 7777/udp
 EXPOSE 8177/udp
+EXPOSE 9100/tcp
