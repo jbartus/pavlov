@@ -16,6 +16,12 @@ provider "aws" {
 
 resource "aws_launch_template" "pavlov-lt" {
   image_id = "ami-089c6f2e3866f0f14"
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 30
+    }
+  }
   instance_market_options {
     market_type = "spot"
   }
