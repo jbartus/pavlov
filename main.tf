@@ -46,6 +46,24 @@ resource "aws_autoscaling_group" "pavlov-asg" {
   }
 }
 
+resource "aws_autoscaling_schedule" "gametime" {
+  scheduled_action_name  = "gametime"
+  min_size               = 1
+  max_size               = 1
+  desired_capacity       = 1
+  recurrence             = "0 19 * * *"
+  autoscaling_group_name = aws_autoscaling_group.pavlov-asg.name
+}
+
+resource "aws_autoscaling_schedule" "bedtime" {
+  scheduled_action_name  = "bedtime"
+  min_size               = 0
+  max_size               = 0
+  desired_capacity       = 0
+  recurrence             = "0 7 * * *"
+  autoscaling_group_name = aws_autoscaling_group.pavlov-asg.name
+}
+
 resource "aws_iam_policy" "pavlov-policy" {
   policy = jsonencode({
     Version = "2012-10-17"
