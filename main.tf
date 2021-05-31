@@ -36,9 +36,8 @@ resource "aws_launch_template" "pavlov-lt" {
 
 resource "aws_autoscaling_group" "pavlov-asg" {
   availability_zones = ["us-east-2a", "us-east-2b"]
-  desired_capacity   = 1
-  max_size           = 1
-  min_size           = 1
+  max_size           = 0
+  min_size           = 0
 
   launch_template {
     id      = aws_launch_template.pavlov-lt.id
@@ -47,18 +46,16 @@ resource "aws_autoscaling_group" "pavlov-asg" {
 }
 
 resource "aws_autoscaling_schedule" "gametime" {
-  scheduled_action_name  = "gametime"
+  scheduled_action_name  = "on-at-3p"
+  desired_capacity       = 1
   min_size               = 1
   max_size               = 1
-  desired_capacity       = 1
   recurrence             = "0 19 * * *"
   autoscaling_group_name = aws_autoscaling_group.pavlov-asg.name
 }
 
 resource "aws_autoscaling_schedule" "bedtime" {
-  scheduled_action_name  = "bedtime"
-  min_size               = 0
-  max_size               = 0
+  scheduled_action_name  = "off-at-3a"
   desired_capacity       = 0
   recurrence             = "0 7 * * *"
   autoscaling_group_name = aws_autoscaling_group.pavlov-asg.name
