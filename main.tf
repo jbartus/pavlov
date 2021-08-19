@@ -28,7 +28,7 @@ resource "aws_launch_template" "pavlov-lt" {
   iam_instance_profile {
     name = aws_iam_instance_profile.pavlov-profile.name
   }
-  instance_type          = "z1d.large"
+  instance_type          = "m6i.large"
   key_name               = "ohio-pavlov"
   user_data              = filebase64("userdata.sh")
   vpc_security_group_ids = [aws_security_group.pavlov-sg.id]
@@ -36,8 +36,8 @@ resource "aws_launch_template" "pavlov-lt" {
 
 resource "aws_autoscaling_group" "pavlov-asg" {
   availability_zones = ["us-east-2a", "us-east-2b"]
-  max_size           = 0
-  min_size           = 0
+  max_size           = 1
+  min_size           = 1
 
   launch_template {
     id      = aws_launch_template.pavlov-lt.id
