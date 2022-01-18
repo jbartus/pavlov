@@ -10,3 +10,5 @@ pull and start the newly built image.
 
 if there is no current instance, 'terraform apply' will get you
 there
+
+
