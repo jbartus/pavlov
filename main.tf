@@ -134,3 +134,16 @@ resource "aws_security_group" "pavlov-sg" {
     ipv6_cidr_blocks = ["::/0"]
   }
 }
+
+resource "aws_dynamodb_table" "pavlov-servers" {
+  name           = "pavlov-servers"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+}
