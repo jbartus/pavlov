@@ -186,3 +186,21 @@ resource "aws_iam_role" "iam_for_lambda" {
   }
 
 }
+
+resource "aws_lambda_function" "pavlov-server-post" {
+  function_name    = "pavlov-server-post"
+  role             = aws_iam_role.iam_for_lambda.arn
+  filename         = "pavlov-server-post/pavlov-server-post.zip"
+  runtime          = "python3.8"
+  handler          = "index.lambda_handler"
+  source_code_hash = filebase64sha256("pavlov-server-post/pavlov-server-post.zip")
+}
+
+resource "aws_lambda_function" "pavlov-server-get" {
+  function_name    = "pavlov-server-get"
+  role             = aws_iam_role.iam_for_lambda.arn
+  filename         = "pavlov-server-get/pavlov-server-get.zip"
+  runtime          = "python3.8"
+  handler          = "index.lambda_handler"
+  source_code_hash = filebase64sha256("pavlov-server-get/pavlov-server-get.zip")
+}
