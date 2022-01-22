@@ -204,3 +204,60 @@ resource "aws_lambda_function" "pavlov-server-get" {
   handler          = "index.lambda_handler"
   source_code_hash = filebase64sha256("pavlov-server-get/pavlov-server-get.zip")
 }
+
+resource "aws_apigatewayv2_api" "pavapi" {
+  name          = "pavapi"
+  protocol_type = "HTTP"
+}
+
+resource "aws_apigatewayv2_stage" "default" {
+  api_id      = aws_apigatewayv2_api.pavapi.id
+  name        = "$default"
+  auto_deploy = true
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.pavapigw.arn
+
+    format = jsonencode({
+      requestId               = "$context.requestId"
+      sourceIp                = "$context.identity.sourceIp"
+      requestTime             = "$context.requestTime"
+      protocol                = "$context.protocol"
+      httpMethod              = "$context.httpMethod"
+      resourcePath            = "$context.resourcePath"
+      routeKey                = "$context.routeKey"
+      status                  = "$context.status"
+      responseLength          = "$context.responseLength"
+      integrationErrorMessage = "$context.integrationErrorMessage"
+      }
+    )
+  }
+}
+
+resource "aws_cloudwatch_log_group" "pavapigw" {
+  name = "/aws/apigw/${aws_apigatewayv2_api.pavapi.name}"
+  retention_in_days = 30
+}
+
+resource "aws_apigatewayv2_route" "pavlov-server-get" {
+  api_id    = aws_apigatewayv2_api.pavapi.id
+  route_key = "GET /pavlov-server/{id}"
+  target    = "integrations/${aws_apigatewayv2_integration.pavlov-server-get.id}"
+}
+
+resource "aws_apigatewayv2_integration" "pavlov-server-get" {
+  api_id                 = aws_apigatewayv2_api.pavapi.id
+  integration_type       = "AWS_PROXY"
+  integration_method     = "POST"
+  integration_uri        = aws_lambda_function.pavlov-server-get.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_lambda_permission" "api_gw" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.pavlov-server-get.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_apigatewayv2_api.pavapi.execution_arn}/*/*"
+}
