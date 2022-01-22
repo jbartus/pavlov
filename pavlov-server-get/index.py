@@ -5,7 +5,7 @@ def lambda_handler(event, context):
     table = client.Table('pavlov-servers')
     response = table.get_item(
         Key={
-            'id': event['id']
+            'id': event['pathParameters']['id']
         }
     )
     if 'Item' in response:
