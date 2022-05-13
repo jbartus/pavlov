@@ -235,7 +235,7 @@ resource "aws_apigatewayv2_stage" "default" {
 }
 
 resource "aws_cloudwatch_log_group" "pavapigw" {
-  name = "/aws/apigw/${aws_apigatewayv2_api.pavapi.name}"
+  name              = "/aws/apigw/${aws_apigatewayv2_api.pavapi.name}"
   retention_in_days = 30
 }
 
@@ -253,11 +253,32 @@ resource "aws_apigatewayv2_integration" "pavlov-server-get" {
   payload_format_version = "2.0"
 }
 
-resource "aws_lambda_permission" "api_gw" {
+resource "aws_lambda_permission" "get-perm" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.pavlov-server-get.function_name
   principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.pavapi.execution_arn}/*/*"
+}
 
-  source_arn = "${aws_apigatewayv2_api.pavapi.execution_arn}/*/*"
+resource "aws_apigatewayv2_route" "pavlov-server-post" {
+  api_id    = aws_apigatewayv2_api.pavapi.id
+  route_key = "POST /pavlov-server"
+  target    = "integrations/${aws_apigatewayv2_integration.pavlov-server-post.id}"
+}
+
+resource "aws_apigatewayv2_integration" "pavlov-server-post" {
+  api_id                 = aws_apigatewayv2_api.pavapi.id
+  integration_type       = "AWS_PROXY"
+  integration_method     = "POST"
+  integration_uri        = aws_lambda_function.pavlov-server-post.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_lambda_permission" "post-perm" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.pavlov-server-post.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.pavapi.execution_arn}/*/*"
 }
