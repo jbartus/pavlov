@@ -1,0 +1,18 @@
+import boto3
+import json
+
+def lambda_handler(event, context):
+    body = json.loads(event['body'])
+    ddbClient = boto3.resource('dynamodb')
+    ddbTable = ddbClient.Table('pavlov-servers')
+    response = ddbTable.put_item(
+        Item={
+            'id': body['id'],
+            'rcontxt': body['rcontxt'],
+            'gameini': body['gameini'],
+        }
+    )
+    return {
+        'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
+        'body': 'Record ' + event['id'] + ' Added'
+    }
