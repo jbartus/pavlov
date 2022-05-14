@@ -14,8 +14,12 @@ provider "aws" {
   region  = "us-east-2"
 }
 
+data "aws_ssm_parameter" "latest-amzn2-ami" {
+   name     = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+}
+
 resource "aws_launch_template" "pavlov-lt" {
-  image_id = "ami-089c6f2e3866f0f14"
+  image_id = data.aws_ssm_parameter.latest-amzn2-ami.value
   block_device_mappings {
     device_name = "/dev/xvda"
     ebs {
