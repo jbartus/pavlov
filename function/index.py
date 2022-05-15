@@ -62,4 +62,3 @@ ec2.run_instances(
 
 #TODO turn this into a lambda
 #TODO make it accept server name as input
-#TODO cleanup the existing server
