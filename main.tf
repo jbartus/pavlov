@@ -2,7 +2,6 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.42"
     }
   }
 
@@ -86,4 +85,51 @@ resource "aws_security_group" "pavlov-sg" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+}
+
+resource "aws_iam_role" "lambda_execution_role" {
+  name = "lambda_execution_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  inline_policy {
+    name = "lambda_logging_policy"
+
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
+          Effect   = "Allow"
+          Resource = "arn:aws:logs:*:*:*"
+        }
+      ]
+    })
+  }
+}
+
+resource "aws_lambda_function" "pavlov-function" {
+  function_name    = "lambda_handler"
+  role             = aws_iam_role.lambda_execution_role.arn
+  filename         = "function/package.zip"
+  runtime          = "python3.8"
+  handler          = "index.lambda_handler"
+  source_code_hash = filebase64sha256("function/package.zip")
+}
+
+resource "aws_lambda_function_url" "pavlov-function-url" {
+  function_name      = aws_lambda_function.pavlov-function.function_name
+  authorization_type = "NONE"
 }
