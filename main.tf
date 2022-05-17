@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
     }
   }
 
@@ -114,6 +114,16 @@ resource "aws_iam_role" "lambda_execution_role" {
           Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
           Effect   = "Allow"
           Resource = "arn:aws:logs:*:*:*"
+        },
+        {
+          Action   = ["ec2:RunInstances"]
+          Effect   = "Allow"
+          Resource = "*"
+        },
+        {
+          Action   = ["iam:PassRole"]
+          Effect   = "Allow"
+          Resource = "${aws_iam_role.pavlov-role.arn}"
         }
       ]
     })
@@ -127,6 +137,7 @@ resource "aws_lambda_function" "pavlov-function" {
   runtime          = "python3.8"
   handler          = "index.lambda_handler"
   source_code_hash = filebase64sha256("function/package.zip")
+  timeout          = 10
 }
 
 resource "aws_lambda_function_url" "pavlov-function-url" {
