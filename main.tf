@@ -13,6 +13,8 @@ provider "aws" {
   region  = "us-east-2"
 }
 
+provider "archive" {}
+
 resource "aws_iam_policy" "pavlov-policy" {
   policy = jsonencode({
     Version = "2012-10-17"
@@ -129,13 +131,20 @@ resource "aws_iam_role" "pavlov_lambda_execution_role" {
     })
   }
 }
+
+data "archive_file" "zip" {
+  type        = "zip"
+  source_file = "function/index.py"
+  output_path = "function/package.zip"
+}
+
 resource "aws_lambda_function" "pavlov-function" {
   function_name    = "pavlov-function"
   role             = aws_iam_role.pavlov_lambda_execution_role.arn
-  filename         = "function/package.zip"
+  filename         = data.archive_file.zip.output_path
+  source_code_hash = data.archive_file.zip.output_base64sha256
   runtime          = "python3.8"
   handler          = "index.handler"
-  source_code_hash = filebase64sha256("function/package.zip")
   timeout          = 10
   environment {
     variables = {
