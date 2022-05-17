@@ -1,7 +1,7 @@
 import json
 import boto3
 
-def lambda_handler(event, context):
+def handler(event, context):
 
     userdata = '''#!/bin/bash
 yum update -y

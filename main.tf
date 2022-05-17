@@ -131,11 +131,11 @@ resource "aws_iam_role" "lambda_execution_role" {
 }
 
 resource "aws_lambda_function" "pavlov-function" {
-  function_name    = "lambda_handler"
+  function_name    = "pavlov-function"
   role             = aws_iam_role.lambda_execution_role.arn
   filename         = "function/package.zip"
   runtime          = "python3.8"
-  handler          = "index.lambda_handler"
+  handler          = "index.handler"
   source_code_hash = filebase64sha256("function/package.zip")
   timeout          = 10
 }
