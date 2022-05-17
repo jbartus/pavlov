@@ -87,8 +87,8 @@ resource "aws_security_group" "pavlov-sg" {
   }
 }
 
-resource "aws_iam_role" "lambda_execution_role" {
-  name = "lambda_execution_role"
+resource "aws_iam_role" "pavlov_lambda_execution_role" {
+  name = "pavlov-lambda-execution-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -105,7 +105,7 @@ resource "aws_iam_role" "lambda_execution_role" {
   })
 
   inline_policy {
-    name = "lambda_logging_policy"
+    name = "pavlov-role-policy"
 
     policy = jsonencode({
       Version = "2012-10-17"
@@ -129,10 +129,9 @@ resource "aws_iam_role" "lambda_execution_role" {
     })
   }
 }
-
 resource "aws_lambda_function" "pavlov-function" {
   function_name    = "pavlov-function"
-  role             = aws_iam_role.lambda_execution_role.arn
+  role             = aws_iam_role.pavlov_lambda_execution_role.arn
   filename         = "function/package.zip"
   runtime          = "python3.8"
   handler          = "index.handler"
