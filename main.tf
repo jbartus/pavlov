@@ -138,6 +138,10 @@ data "archive_file" "zip" {
   output_path = "function/package.zip"
 }
 
+data "aws_ssm_parameter" "amzn2-ami" {
+  name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+}
+
 resource "aws_lambda_function" "pavlov-function" {
   function_name    = "pavlov-function"
   role             = aws_iam_role.pavlov_lambda_execution_role.arn
@@ -150,6 +154,7 @@ resource "aws_lambda_function" "pavlov-function" {
     variables = {
       SECGRPID = aws_security_group.pavlov-sg.id
       INSTPROF = aws_iam_instance_profile.pavlov-profile.arn
+      AMZN2AMI = data.aws_ssm_parameter.amzn2-ami.value
     }
   }
 }

@@ -43,7 +43,7 @@ docker run \
     ec2 = boto3.client('ec2')
 
     ec2.run_instances(
-        ImageId='ami-0fe23c115c3ba9bac',
+        ImageId=os.environ.get('AMZN2AMI'),
         MinCount=1,
         MaxCount=1,
         InstanceType='m6a.large',
