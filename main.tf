@@ -138,6 +138,11 @@ resource "aws_lambda_function" "pavlov-function" {
   handler          = "index.handler"
   source_code_hash = filebase64sha256("function/package.zip")
   timeout          = 10
+  environment {
+    variables = {
+      SECGRPID = aws_security_group.pavlov-sg.id
+    }
+  }
 }
 
 resource "aws_lambda_function_url" "pavlov-function-url" {

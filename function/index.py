@@ -1,5 +1,6 @@
 import json
 import boto3
+import os
 
 def handler(event, context):
 
@@ -46,7 +47,7 @@ docker run \
         MinCount=1,
         MaxCount=1,
         InstanceType='m6a.large',
-        SecurityGroupIds=['sg-0d8595b86cf32b1df'],
+        SecurityGroupIds=[os.environ.get('SECGRPID')],
         KeyName='ohio-pavlov',
         IamInstanceProfile={'Arn': 'arn:aws:iam::601049323275:instance-profile/terraform-20220517022504279500000004'},
         UserData=userdata,
