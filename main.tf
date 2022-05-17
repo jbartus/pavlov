@@ -141,6 +141,7 @@ resource "aws_lambda_function" "pavlov-function" {
   environment {
     variables = {
       SECGRPID = aws_security_group.pavlov-sg.id
+      INSTPROF = aws_iam_instance_profile.pavlov-profile.arn
     }
   }
 }

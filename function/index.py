@@ -49,7 +49,7 @@ docker run \
         InstanceType='m6a.large',
         SecurityGroupIds=[os.environ.get('SECGRPID')],
         KeyName='ohio-pavlov',
-        IamInstanceProfile={'Arn': 'arn:aws:iam::601049323275:instance-profile/terraform-20220517022504279500000004'},
+        IamInstanceProfile={'Arn': os.environ.get('INSTPROF')},
         UserData=userdata,
         BlockDeviceMappings=[
             {
