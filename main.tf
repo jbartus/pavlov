@@ -132,12 +132,6 @@ resource "aws_iam_role" "pavlov_lambda_execution_role" {
   }
 }
 
-data "archive_file" "zip" {
-  type        = "zip"
-  source_file = "function/index.py"
-  output_path = "function/package.zip"
-}
-
 data "aws_ssm_parameter" "amzn2-ami" {
   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 }
@@ -145,8 +139,8 @@ data "aws_ssm_parameter" "amzn2-ami" {
 resource "aws_lambda_function" "pavlov-function" {
   function_name    = "pavlov-function"
   role             = aws_iam_role.pavlov_lambda_execution_role.arn
-  filename         = data.archive_file.zip.output_path
-  source_code_hash = data.archive_file.zip.output_base64sha256
+  filename         = "function/package.zip"
+  source_code_hash = filebase64sha256("function/package.zip")
   runtime          = "python3.8"
   handler          = "index.handler"
   timeout          = 10
