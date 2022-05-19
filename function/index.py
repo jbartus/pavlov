@@ -4,7 +4,7 @@ import os
 
 def handler(event, context):
 
-    userdata = '''#!/bin/bash
+    userdata1 = '''#!/bin/bash
 yum update -y
 yum install jq -y
 amazon-linux-extras install docker
@@ -15,7 +15,8 @@ docker pull docker.pkg.github.com/jbartus/pavlov/pavlov:latest
 cat<<EOT > /tmp/Game.ini
 [/Script/Pavlov.DedicatedServer]
 bEnabled=true
-ServerName="mighty test server"
+ServerName="'''
+    userdata2 = '''"
 MaxPlayers=16
 bSecured=true
 bCustomServer=true
@@ -50,7 +51,7 @@ docker run \
         SecurityGroupIds=[os.environ.get('SECGRPID')],
         KeyName='ohio-pavlov',
         IamInstanceProfile={'Arn': os.environ.get('INSTPROF')},
-        UserData=userdata,
+        UserData=userdata1 + event['queryStringParameters']['name'] + userdata2,
         BlockDeviceMappings=[
             {
                 'DeviceName': '/dev/xvda',
