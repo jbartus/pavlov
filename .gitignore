@@ -36,3 +36,4 @@ terraform.rc
 function/package.zip
 function/__pycache__/
 function/venv*
+.env
