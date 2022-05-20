@@ -3,10 +3,32 @@ import boto3
 import os
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 from mangum import Mangum
 from dotenv import load_dotenv
 
 load_dotenv()
+
+class PavlovServer(BaseModel):
+    """
+    This class is used to define the server's configuration.
+    """
+    #bEnabled: bool
+    ServerName: str
+    #MaxPlayers: int
+    #ApiKey: Union[str, None] = None
+    #bSecured: bool
+    #bCustomServer: bool
+    #bVerboseLogging: bool
+    #bCompetitive: bool
+    #bWhitelist: bool
+    #RefreshListTime: int
+    #LimitedAmmoType: int
+    #TickRate: int
+    #TimeLimit: int
+    #Password=0000
+    #BalanceTableURL="vankruptgames/BalancingTable/main"
+    #MapRotation=(MapId="sand", GameMode="DM")
 
 app = FastAPI()
 
@@ -14,8 +36,8 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/foo")
-def run_foo(name: str):
+@app.post("/pavlov-server")
+def run_pavlov_server(pavlov_server: PavlovServer):
     userdata1 = '''#!/bin/bash
 yum update -y
 yum install jq -y
@@ -63,7 +85,7 @@ docker run \
         SecurityGroupIds=[os.environ.get('SECGRPID')],
         KeyName='ohio-pavlov',
         IamInstanceProfile={'Arn': os.environ.get('INSTPROF')},
-        UserData=userdata1 + name + userdata2,
+        UserData=userdata1 + pavlov_server.ServerName + userdata2,
         BlockDeviceMappings=[
             {
                 'DeviceName': '/dev/xvda',
@@ -75,6 +97,6 @@ docker run \
         InstanceMarketOptions={'MarketType': 'spot'}
     )
 
-    return {"servername": name }
+    return pavlov_server
 
 handler = Mangum(app, lifespan="off")
