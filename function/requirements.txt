@@ -2,4 +2,4 @@ fastapi
 uvicorn
 mangum
 boto3
-dotenv
+python-dotenv
