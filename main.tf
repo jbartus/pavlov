@@ -139,8 +139,8 @@ data "aws_ssm_parameter" "amzn2-ami" {
 resource "aws_lambda_function" "pavlov-function" {
   function_name    = "pavlov-function"
   role             = aws_iam_role.pavlov_lambda_execution_role.arn
-  filename         = "function/package.zip"
-  source_code_hash = filebase64sha256("function/package.zip")
+  filename         = "package.zip"
+  source_code_hash = filebase64sha256("package.zip")
   runtime          = "python3.8"
   handler          = "index.handler"
   timeout          = 10
