@@ -13,11 +13,11 @@ load_dotenv()
 app = FastAPI()
 
 @app.get("/")
-def read_root():
+async def read_root():
     return {"Hello": "World"}
 
 @app.post("/pavlov-server")
-def run_pavlov_server(pavlov_server: PavlovServer):
+async def run_pavlov_server(pavlov_server: PavlovServer):
 
     userdata = Path('userdata.sh').read_text()
 
