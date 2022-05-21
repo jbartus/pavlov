@@ -98,4 +98,4 @@ EOT
 
     return pavlov_server
 
-handler = Mangum(app, lifespan="off")
+handler = Mangum(app)
