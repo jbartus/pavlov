@@ -4,8 +4,6 @@ this repo is a co-mingle of
 - a terraform script defining the aws infra to run a lambda
 - a fastapi based python rest api for launching pavlov servers on ec2 to run in that lambda
 
-pushing/changing litearlly anything will trigger a docker build
-
 the api can run locally with: `uvicorn index:app --reload`
 
 packaging up the lambda for deployment:
