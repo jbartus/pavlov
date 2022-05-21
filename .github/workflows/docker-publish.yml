@@ -5,6 +5,11 @@ on:
     # Publish `main` as Docker `latest` image.
     branches:
       - main
+    
+    paths:
+      - 'Dockerfile'
+      - 'Game.ini'
+      - 'RconSettings.txt'
 
     # Publish `v1.2.3` tags as releases.
     tags:
