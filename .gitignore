@@ -33,7 +33,7 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-function/package.zip
-function/__pycache__/
-function/.venv*
+package.zip
+__pycache__/
+.venv*
 .env
