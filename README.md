@@ -23,3 +23,8 @@ from there posting to /pavlov-server with the right body params will
 - to setup docker 
 - and 'template' out the game.ini file
 - and then run the docker container with the config file mounted as a volume
+
+the included Game.ini file is not used automatically, you can use it to craft a json value with:
+```
+jq -Rs '.' Game.ini
+```

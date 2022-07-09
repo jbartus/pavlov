@@ -1,2 +1,0 @@
-Password=ChangeThisPassword
-Port=9100
