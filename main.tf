@@ -157,7 +157,3 @@ resource "aws_lambda_function_url" "pavlov-function-url" {
   function_name      = aws_lambda_function.pavlov-function.function_name
   authorization_type = "NONE"
 }
-
-output "pavlov-function-url" {
-  value = aws_lambda_function_url.pavlov-function-url.function_url
-}

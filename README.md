@@ -28,3 +28,9 @@ the included Game.ini file is not used automatically, you can use it to craft a 
 ```
 jq -Rs '.' Game.ini
 ```
+
+when testing the api locally the code looks for env vars that would have been passed in lambda in the .env file
+after terraform has been run once you can populated it with this command:
+```
+terraform output -json | jq '.["env-vars"].value[][] | to_entries[] | .key, "=\"", .value, "\"\n"' -j > .env
+```
